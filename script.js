@@ -74,7 +74,7 @@ const displayMovements = function (movements, sort = false) {
   const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
 
   movs.forEach(function (mov, i) {
-    const type = mov > 0 ? 'deposite' : 'withdrawal';
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
     <div class="movements__row">
@@ -113,3 +113,36 @@ const calcDisplaySummary = function (acc) {
     .reduce((acc, int) => acc + int, 0);
   labelSumInterest.textContent = `${interest}`
 };
+
+const updateUI = function (acc) {
+  // Display movements
+  displayMovements(acc.movements)
+  // Display Balance
+  calcDisplayBalance(acc)
+  // Display summary 
+  calcDisplaySummary(acc)
+}
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  // Prevent form from submitting...
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // console.log('LOGIN');
+    // Disp;ay UI and Messege
+    labelWelcome.textContent = `Welcome Back, ${currentAccount.owner.split(' ')[0]}`;
+    containerApp.style.opacity = 100;
+    // Clear input Fields..
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    // Update Ui...
+    updateUI(currentAccount)
+
+  }
+});
